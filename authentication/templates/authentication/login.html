@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Import Material Icons for consistent iconography -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href={% static 'authentication/css/login.css' %}>
+
+</head>
+<body>
+  <!-- Page Login -->
+  <div class="login-container">
+    <h2>Login</h2>
+    <form method="POST">
+      {%csrf_token%}
+      <!-- Input Email -->
+      <div class="input-group">
+        <input type="email" placeholder="Email" required autocomplete="username" name="email">
+        <span class="material-icons" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); color:#bbb; pointer-events:none;">
+          mail
+        </span>
+      </div>
+      <!-- Input Email -->
+
+      <!-- Input Password -->
+      <div class="input-group">
+        <input id="password" type="password" placeholder="Password" required autocomplete="current-password">
+        <button class="toggle-password" type="button" onclick="togglePasswordVisibility()" aria-label="Show/Hide Password">
+          <span class="material-icons" id="eye-icon">visibility</span>
+        </button>
+      </div>
+      <!-- Input Password -->
+
+      <!-- Button Lupa password -->
+      <div class="actions">
+        <a href="#" id="forgot-password"><span class="material-icons" style="font-size:1rem;">lock_reset</span>Forgot Password?</a>
+      </div>
+      <!-- Button Lupa password -->
+
+      <!-- Button login -->
+      <button class="login-btn" type="submit">
+        <span class="material-icons">login</span>
+        Login
+      </button>
+      <!-- Button login -->
+
+      <!-- Button login dengan Oauth -->
+      <button class="google-btn" type="button" onclick="handleGoogleOauth()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+        Login with Google
+      </button>
+      <!-- Button login dengan Oauth -->
+
+    </form>
+    <!-- Tag Register -->
+    <div class="register-link">
+      <span>Don't have an account?</span>
+      <a href="#" id="register-link">
+        <span class="material-icons" style="font-size:1.08em;">person_add</span>
+        Register
+      </a>
+    </div>
+    <!-- Tag Register -->
+  
+  </div>
+  <!-- Page Login -->
+
+
+  <!-- Javascript Login -->
+  <script type="module" src={% static 'authentication/js/login.js'%}></script>
+</body>
+</html>

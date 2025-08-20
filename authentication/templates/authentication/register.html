@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Daftar - Register</title>
+  <!-- Material Icons for consistent iconography -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <style>
+    :root{
+      --primary: #1976d2;
+      --primary-dark: #145ea8;
+      --border: #e0e5e9;
+      --bg: #f6f8fa;
+      --white: #fff;
+      --radius: 14px;
+      --transition: 0.22s ease;
+      --icon-size: 22px;
+      --input-height: 44px;
+      --input-padding: 12px;
+      --input-icon-offset: 14px;
+      --input-toggle-offset: 8px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background:var(--bg);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+    .card{
+      width:100%;
+      max-width:420px;
+      background:var(--white);
+      border-radius:var(--radius);
+      padding:28px;
+      box-shadow: 0 8px 28px rgba(25,118,210,0.06);
+      animation: enter .5s ease;
+    }
+    @keyframes enter{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+    h1{
+      color:var(--primary);
+      font-size:1.6rem;
+      margin-bottom:12px;
+      text-align:center;
+    }
+    p.lead{color:#555;text-align:center;margin-bottom:18px}
+    .form-row{margin-bottom:14px;position:relative}
+    label{display:block;font-size:0.9rem;margin-bottom:6px;color:#333}
+
+    /* Input wrapper for flexbox centering */
+    .input-wrapper {
+      display: flex;
+      align-items: center;
+      position: relative;
+      height: var(--input-height);
+    }
+    .input-wrapper input[type="text"],
+    .input-wrapper input[type="email"],
+    .input-wrapper input[type="password"] {
+      flex: 1;
+      height: 100%;
+      padding-left: calc(var(--icon-size) + var(--input-icon-offset)*2);
+      padding-right: calc(var(--icon-size) + var(--input-toggle-offset)*2);
+      border: 1.3px solid var(--border);
+      border-radius:8px;
+      background:#fbfcfd;
+      transition:box-shadow var(--transition),border-color var(--transition);
+      font-size:1rem;
+      line-height:1.2;
+      box-sizing: border-box;
+    }
+    .input-wrapper input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px #1976d21a}
+
+    .input-icon-left{
+      position: absolute;
+      left: var(--input-icon-offset);
+      top: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      color: #9aa4ad;
+      pointer-events: none;
+      font-size: var(--icon-size);
+      line-height: 1;
+      z-index: 2;
+    }
+
+    .toggle-btn{
+      position: absolute;
+      right: var(--input-toggle-offset);
+      top: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      padding: 6px;
+      cursor: pointer;
+      color: #9aa4ad;
+      border-radius:6px;
+      z-index: 2;
+    }
+    .toggle-btn:hover{color:var(--primary)}
+    .toggle-btn .material-icons{font-size:var(--icon-size);line-height:1}
+
+    .small{font-size:0.88rem;color:#666;margin-top:6px}
+    .checkbox-row{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .checkbox-row input{width:18px;height:18px}
+    .btn{
+      width:100%;
+      padding:12px;
+      border-radius:8px;
+      border:none;
+      cursor:pointer;
+      font-weight:600;
+      font-size:1rem;
+      transition:background var(--transition),box-shadow var(--transition);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+    }
+    .btn-primary{background:var(--primary);color:#fff;box-shadow:0 6px 18px rgba(25,118,210,0.09)}
+    .btn-primary:hover{background:var(--primary-dark)}
+    .btn-google{
+      background:#fff;
+      color:#444;
+      border:1.2px solid var(--border);
+      box-shadow:0 2px 6px rgba(0,0,0,0.03);
+      padding:10px 12px;
+    }
+    .btn-google img{width:20px;height:20px}
+    .or{display:flex;align-items:center;gap:12px;margin:12px 0}
+    .or hr{flex:1;border:none;height:1px;background:var(--border)}
+    .or span{font-size:0.9rem;color:#777}
+    .footer{
+      text-align:center;
+      margin-top:10px;
+      color:#555;
+      font-size:0.95rem;
+    }
+    .link{color:var(--primary);text-decoration:none;font-weight:600}
+    .error{color:#b00020;font-size:0.88rem;margin-top:8px}
+    .pw-strength{
+      height:8px;border-radius:6px;background:#eee;margin-top:8px;overflow:hidden;
+    }
+    .pw-strength > i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#ff7043,#ffc107);transition:width 0.2s}
+    @media (max-width:420px){
+      .card{padding:18px}
+    }
+  </style>
+</head>
+<body>
+  <main class="card" aria-live="polite">
+    <h1>Buat Akun</h1>
+    <p class="lead">Daftar untuk mengakses layanan kami</p>
+
+    <form id="registerForm" method="POST" novalidate>
+    {% csrf_token %}
+      <div class="form-row">
+        <label for="fullName">Nama Lengkap</label>
+        <div class="input-wrapper">
+          <span class="input-icon-left material-icons" aria-hidden="true">person</span>
+          <input id="fullName" name="fullName" type="text" placeholder="Nama lengkap" required autocomplete="name" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label for="email">Email</label>
+        <div class="input-wrapper">
+          <span class="input-icon-left material-icons" aria-hidden="true">mail</span>
+          <input id="email" name="email" type="email" placeholder="email@contoh.com" required autocomplete="email" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+          <span class="input-icon-left material-icons" aria-hidden="true">lock</span>
+          <input id="password" name="password" type="password" placeholder="Minimal 8 karakter" required autocomplete="new-password" />
+          <button type="button" class="toggle-btn" aria-label="Tampilkan password" data-target="password">
+            <span class="material-icons" id="eye-password">visibility</span>
+          </button>
+        </div>
+        <div class="pw-strength" aria-hidden="true"><i id="pwBar"></i></div>
+        <div class="small">Gunakan kombinasi huruf besar, kecil, angka, dan simbol.</div>
+      </div>
+
+      <div class="form-row">
+        <label for="confirmPassword">Konfirmasi Password</label>
+        <div class="input-wrapper">
+          <span class="input-icon-left material-icons" aria-hidden="true">lock</span>
+          <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Ketik ulang password" required autocomplete="new-password" />
+          <button type="button" class="toggle-btn" aria-label="Tampilkan konfirmasi password" data-target="confirmPassword">
+            <span class="material-icons" id="eye-confirm">visibility</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="checkbox-row">
+        <input id="agree" name="agree" type="checkbox" required />
+        <label for="agree" class="small">Saya menyetujui <a href="#" class="link">Syarat & Ketentuan</a> dan <a href="#" class="link">Kebijakan Privasi</a>.</label>
+      </div>
+
+      <div id="formError" class="error" role="alert" aria-live="assertive" style="display:none"></div>
+
+      <button type="submit" class="btn btn-primary" id="registerBtn">
+        <span class="material-icons">person_add</span>
+        Daftar
+      </button>
+
+      <div class="or" aria-hidden="true">
+        <hr><span>atau</span><hr>
+      </div>
+
+      <button type="button" class="btn btn-google" id="googleBtn" onclick="handleGoogleOauth()" aria-label="Daftar dengan Google">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo" />
+        Daftar dengan Google
+      </button>
+
+      <div class="footer">
+        Sudah punya akun? <a href="#" class="link" id="toLogin">Masuk</a>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    // Utility: simple password strength estimator
+    function pwStrengthScore(pw) {
+      let score = 0;
+      if (!pw) return 0;
+      if (pw.length >= 8) score += 1;
+      if (/[A-Z]/.test(pw)) score += 1;
+      if (/[0-9]/.test(pw)) score += 1;
+      if (/[^A-Za-z0-9]/.test(pw)) score += 1;
+      if (pw.length >= 12) score += 1;
+      return score; // 0..5
+    }
+
+    const pwBar = document.getElementById('pwBar');
+    const passwordInput = document.getElementById('password');
+    const confirmInput = document.getElementById('confirmPassword');
+    const form = document.getElementById('registerForm');
+    const formError = document.getElementById('formError');
+
+    passwordInput.addEventListener('input', () => {
+      const s = pwStrengthScore(passwordInput.value);
+      const percent = Math.round((s / 5) * 100);
+      pwBar.style.width = percent + '%';
+      // color by strength
+      if (s <= 1) pwBar.style.background = '#ff6b6b';
+      else if (s <= 3) pwBar.style.background = '#ffb74d';
+      else pwBar.style.background = '#66bb6a';
+      // clear previous errors live
+      formError.style.display = 'none';
+    });
+
+    // Toggle password visibility for fields with .toggle-btn
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        const input = document.getElementById(targetId);
+        const icon = btn.querySelector('.material-icons');
+        if (!input) return;
+        if (input.type === 'password') {
+          input.type = 'text';
+          icon.textContent = 'visibility_off';
+          btn.setAttribute('aria-pressed', 'true');
+        } else {
+          input.type = 'password';
+          icon.textContent = 'visibility';
+          btn.setAttribute('aria-pressed', 'false');
+        }
+      });
+    });
+
+    // Basic client-side validation and submit handler (placeholder)
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.style.display = 'none';
+      const name = document.getElementById('fullName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const pw = passwordInput.value;
+      const cpw = confirmInput.value;
+      const agree = document.getElementById('agree').checked;
+
+      if (!name || !email || !pw || !cpw) {
+        showError('Silakan isi semua field yang diperlukan.');
+        return;
+      }
+      if (pw.length < 8) {
+        showError('Password minimal 8 karakter.');
+        return;
+      }
+      if (pw !== cpw) {
+        showError('Password dan konfirmasi tidak sama.');
+        return;
+      }
+      if (!agree) {
+        showError('Anda harus menyetujui Syarat & Ketentuan.');
+        return;
+      }
+
+      // If you have backend, send data via fetch here.
+      // For demo, show success message.
+      formError.style.color = '#2e7d32';
+      showError('Pendaftaran berhasil (demo). Lanjutkan ke backend untuk menyimpan akun.');
+      // Reset color back to error red after a short delay if needed
+      setTimeout(()=>{ formError.style.color = '#b00020'; }, 2000);
+    });
+
+    function showError(msg) {
+      formError.textContent = msg;
+      formError.style.display = 'block';
+    }
+
+    // Google OAuth handler (placeholder)
+    function handleGoogleOauth() {
+      // Replace YOUR_CLIENT_ID and YOUR_REDIRECT_URI with real values on backend integration
+      const clientId = 'YOUR_CLIENT_ID';
+      const redirect = encodeURIComponent('YOUR_REDIRECT_URI');
+      const scope = encodeURIComponent('email profile');
+      const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirect}&response_type=code&scope=${scope}`;
+      // For demo one could open URL; real apps should start OAuth from server side
+      window.location.href = url;
+    }
+
+    // "Masuk" link behaviour placeholder (navigate to login page)
+    document.getElementById('toLogin').addEventListener('click', (e) => {
+      e.preventDefault();
+      // navigate to login page in real app, e.g. window.location.href = '/login.html'
+      alert('Navigasi ke halaman login (ganti dengan window.location.href ke halaman login Anda).');
+    });
+  </script>
+</body>
+</html>
