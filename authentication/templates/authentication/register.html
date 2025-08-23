@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -167,22 +168,37 @@
 
     <form id="registerForm" method="POST" novalidate>
     {% csrf_token %}
+    <!-- Form Nama -->
       <div class="form-row">
-        <label for="fullName">Nama Lengkap</label>
+        <label for={{registerUserForm.first_name.id_for_label}}>Nama Lengkap</label>
         <div class="input-wrapper">
           <span class="input-icon-left material-icons" aria-hidden="true">person</span>
-          <input id="fullName" name="fullName" type="text" placeholder="Nama lengkap" required autocomplete="name" />
+          <input id={{registerUserForm.first_name.id_for_label}} name={{registerUserForm.first_name.name}} type="text" placeholder="Nama lengkap" required autocomplete="name" />
+        </div>
+      </div>      
+    <!-- Form Nama -->
+    
+    <!-- Form Username -->
+      <div class="form-row">
+        <label for={{registerUserForm.username.id_for_label}}>Username</label>
+        <div class="input-wrapper">
+          <span class="input-icon-left material-icons" aria-hidden="true">person</span>
+          <input id={{registerUserForm.username.id_for_label}} name={{registerUserForm.username.name}} type="text" placeholder="Username" required autocomplete="name" />
         </div>
       </div>
+    <!-- Form Username -->
 
+    <!-- Form Email -->
       <div class="form-row">
-        <label for="email">Email</label>
+        <label for={{registerUserForm.email.id_for_label}}>Email</label>
         <div class="input-wrapper">
           <span class="input-icon-left material-icons" aria-hidden="true">mail</span>
-          <input id="email" name="email" type="email" placeholder="email@contoh.com" required autocomplete="email" />
+          <input id={{registerUserForm.email.id_for_label}} name={{registerUserForm.email.name}} type="email" placeholder="email@contoh.com" required autocomplete="email" />
         </div>
       </div>
+    <!-- Form Email -->
 
+    <!-- Form Password -->
       <div class="form-row">
         <label for="password">Password</label>
         <div class="input-wrapper">
@@ -195,7 +211,9 @@
         <div class="pw-strength" aria-hidden="true"><i id="pwBar"></i></div>
         <div class="small">Gunakan kombinasi huruf besar, kecil, angka, dan simbol.</div>
       </div>
+    <!-- Form Password -->
 
+    <!-- Form Confirm Password -->
       <div class="form-row">
         <label for="confirmPassword">Konfirmasi Password</label>
         <div class="input-wrapper">
@@ -206,141 +224,46 @@
           </button>
         </div>
       </div>
+    <!-- Form Confirm Password -->
 
+    <!-- Form Checkbox -->
       <div class="checkbox-row">
         <input id="agree" name="agree" type="checkbox" required />
         <label for="agree" class="small">Saya menyetujui <a href="#" class="link">Syarat & Ketentuan</a> dan <a href="#" class="link">Kebijakan Privasi</a>.</label>
       </div>
+    <!-- Form Checkbox -->
+
 
       <div id="formError" class="error" role="alert" aria-live="assertive" style="display:none"></div>
 
+    <!-- Button Submit -->
       <button type="submit" class="btn btn-primary" id="registerBtn">
         <span class="material-icons">person_add</span>
         Daftar
       </button>
+    <!-- Button Submit -->
 
       <div class="or" aria-hidden="true">
         <hr><span>atau</span><hr>
       </div>
 
+    <!-- Login with Goggle -->
       <button type="button" class="btn btn-google" id="googleBtn" onclick="handleGoogleOauth()" aria-label="Daftar dengan Google">
         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo" />
         Daftar dengan Google
       </button>
+    <!-- Login with Goggle -->
 
+
+    <!-- Login -->
       <div class="footer">
         Sudah punya akun? <a href="#" class="link" id="toLogin">Masuk</a>
       </div>
+    <!-- Login -->
+
     </form>
   </main>
 
-  <script>
-    // Utility: simple password strength estimator
-    function pwStrengthScore(pw) {
-      let score = 0;
-      if (!pw) return 0;
-      if (pw.length >= 8) score += 1;
-      if (/[A-Z]/.test(pw)) score += 1;
-      if (/[0-9]/.test(pw)) score += 1;
-      if (/[^A-Za-z0-9]/.test(pw)) score += 1;
-      if (pw.length >= 12) score += 1;
-      return score; // 0..5
-    }
-
-    const pwBar = document.getElementById('pwBar');
-    const passwordInput = document.getElementById('password');
-    const confirmInput = document.getElementById('confirmPassword');
-    const form = document.getElementById('registerForm');
-    const formError = document.getElementById('formError');
-
-    passwordInput.addEventListener('input', () => {
-      const s = pwStrengthScore(passwordInput.value);
-      const percent = Math.round((s / 5) * 100);
-      pwBar.style.width = percent + '%';
-      // color by strength
-      if (s <= 1) pwBar.style.background = '#ff6b6b';
-      else if (s <= 3) pwBar.style.background = '#ffb74d';
-      else pwBar.style.background = '#66bb6a';
-      // clear previous errors live
-      formError.style.display = 'none';
-    });
-
-    // Toggle password visibility for fields with .toggle-btn
-    document.querySelectorAll('.toggle-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const targetId = btn.getAttribute('data-target');
-        const input = document.getElementById(targetId);
-        const icon = btn.querySelector('.material-icons');
-        if (!input) return;
-        if (input.type === 'password') {
-          input.type = 'text';
-          icon.textContent = 'visibility_off';
-          btn.setAttribute('aria-pressed', 'true');
-        } else {
-          input.type = 'password';
-          icon.textContent = 'visibility';
-          btn.setAttribute('aria-pressed', 'false');
-        }
-      });
-    });
-
-    // Basic client-side validation and submit handler (placeholder)
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      formError.style.display = 'none';
-      const name = document.getElementById('fullName').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const pw = passwordInput.value;
-      const cpw = confirmInput.value;
-      const agree = document.getElementById('agree').checked;
-
-      if (!name || !email || !pw || !cpw) {
-        showError('Silakan isi semua field yang diperlukan.');
-        return;
-      }
-      if (pw.length < 8) {
-        showError('Password minimal 8 karakter.');
-        return;
-      }
-      if (pw !== cpw) {
-        showError('Password dan konfirmasi tidak sama.');
-        return;
-      }
-      if (!agree) {
-        showError('Anda harus menyetujui Syarat & Ketentuan.');
-        return;
-      }
-
-      // If you have backend, send data via fetch here.
-      // For demo, show success message.
-      formError.style.color = '#2e7d32';
-      showError('Pendaftaran berhasil (demo). Lanjutkan ke backend untuk menyimpan akun.');
-      // Reset color back to error red after a short delay if needed
-      setTimeout(()=>{ formError.style.color = '#b00020'; }, 2000);
-    });
-
-    function showError(msg) {
-      formError.textContent = msg;
-      formError.style.display = 'block';
-    }
-
-    // Google OAuth handler (placeholder)
-    function handleGoogleOauth() {
-      // Replace YOUR_CLIENT_ID and YOUR_REDIRECT_URI with real values on backend integration
-      const clientId = 'YOUR_CLIENT_ID';
-      const redirect = encodeURIComponent('YOUR_REDIRECT_URI');
-      const scope = encodeURIComponent('email profile');
-      const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirect}&response_type=code&scope=${scope}`;
-      // For demo one could open URL; real apps should start OAuth from server side
-      window.location.href = url;
-    }
-
-    // "Masuk" link behaviour placeholder (navigate to login page)
-    document.getElementById('toLogin').addEventListener('click', (e) => {
-      e.preventDefault();
-      // navigate to login page in real app, e.g. window.location.href = '/login.html'
-      alert('Navigasi ke halaman login (ganti dengan window.location.href ke halaman login Anda).');
-    });
-  </script>
+<script src="{% static 'authentication/js/register.js'%}"></script>
 </body>
 </html>
